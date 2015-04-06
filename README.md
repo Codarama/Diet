@@ -1,17 +1,15 @@
-[![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
+[![Build Status](https://travis-ci.org/Codarama/diet-engine.svg?branch=master)](https://travis-ci.org/Codarama/diet-engine)
+[![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
 
-Ownership changed
+Diet
 ======
 
-The official repo for this project is now [here](https://github.com/Codarama/Facade).
+[![Join the chat at https://gitter.im/Codarama/diet-engine](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Codarama/diet-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Facade
-======
+Diet tries to create a jar from all of the jars used by a project.
+The result jar should contain only classes the project actually uses, nothing else.
 
-Facade tries to create a jar from all of the jars used by a project.
-The facade jar should contain only classes the project actually uses, nothing else.
-
-This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/amaranthius/facade-maven), an eclpse plugin and perhaps a web project.
+This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/Codarama/diet-maven-mojo), an eclpse plugin and perhaps a web project.
 
 It's main target group is currently android development as space conservation is completely uneeded for web development, but it can be used for that also.
 
@@ -19,7 +17,7 @@ It's main target group is currently android development as space conservation is
 
 ### Source Dependency Resolution:
 
-Facade can resolve the dependencies of .java source files. 
+Diet can resolve the dependencies of .java source files. 
 Currently like this:
 
 ```java
@@ -30,7 +28,7 @@ final Set<ClassName> dependencies = Dependencies
 
 ### Binary Class Dependency Resolution:
 
-Facade can also resolve the dependencies of compiled binary .class files:
+Diet can also resolve the dependencies of compiled binary .class files:
 
 ```java
 final Set<ClassName> dependencies = Dependencies
@@ -56,7 +54,7 @@ You can also set the output dir for the minimizer, have [a look at the wiki](htt
 
 ### Component Events:
 
-Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
+Diet can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
 resolving the dependencies of a binary class you can:
 
 ```java
@@ -80,10 +78,10 @@ There is a whole hierarchy of events you can listen to, there is [a wiki page](h
 
 In order to use the library you can either:
 
- * [Download the latest binary .jar](https://github.com/ayld/Facade/releases/tag/v0.6-alpha.1), 
-in which case you will also need the dependencies. You can either find them [in the POM](https://github.com/ayld/Facade/blob/master/pom.xml),
+ * [Download the latest binary .jar](https://github.com/codarama/Diet/releases/tag/v0.6-alpha.1),
+in which case you will also need the dependencies. You can either find them [in the POM](https://github.com/Codarama/diet-engine/blob/master/pom.xml),
 or download them from [the dependencies project](https://github.com/ayld/facade-dependencies).
- * Build [the latest tag](https://github.com/ayld/Facade/releases/tag/v0.6-alpha.1) with [Maven 3.x](http://maven.apache.org/). Just
+ * Build [the latest tag](https://github.com/codarama/Diet/releases/tag/v0.6-alpha.1) with [Maven 3.x](http://maven.apache.org/). Just
 clone it and run `mvn clean install` in your local copy. This way Maven will get the dependencies for you.
 
 You can also build the master branch (on your own risk) in the same way you build the latest tag.
