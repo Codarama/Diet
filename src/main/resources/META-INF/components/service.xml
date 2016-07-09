@@ -9,21 +9,22 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="listenableComponent"/>
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="listenableComponent">
+            <property name="classStreamResolver" ref="classStreamResolver"/>
+        </bean>
+
+        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
 		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="listenableComponent"/>
-		
-		<bean id="jarExploder" class="org.codarama.diet.bundle.impl.ManualJarExploder" parent="listenableComponent">
-			<property name="workDir" value="#{workDir}"/>
-		</bean>
-		
-		<bean id="explicitJarExploder" class="org.codarama.diet.bundle.impl.ManualJarExploder" parent="listenableComponent">
-			<property name="workDir" value="#{mandatoryWorkDir}"/>
-		</bean>
 		
 		<bean id="jarMaker" class="org.codarama.diet.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>
-		
+
+		<bean id="streamJarMaker" class="org.codarama.diet.bundle.impl.StreamJarMaker">
+			<property name="zippedJarName" value="#{defaultOutJar}"/>
+		</bean>
+
 		<bean id="unanimousMatcher" class="org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 			<property name="conditions">
 				<set>
@@ -33,4 +34,14 @@
 				</set>
 			</property>
 		</bean>
+
+        <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy">
+            <property name="index" ref="modeShapeIndex"/>
+            <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+            <property name="classDependencyResolver" ref="classStreamResolver"/>
+        </bean>
+
+        <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
+            <constructor-arg type="java.lang.String" value="indexConfig.json"/>
+        </bean>
 </beans>

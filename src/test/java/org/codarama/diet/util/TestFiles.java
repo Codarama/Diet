@@ -1,14 +1,10 @@
 package org.codarama.diet.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Set;
-
-import junit.framework.Assert;
-import static junit.framework.Assert.assertTrue;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.io.Resources;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testFilesContext.xml"})
@@ -63,7 +61,8 @@ public class TestFiles {
 				new File(Resources.getResource("test-classes/ClassName.class").toURI()),
 				new File(Resources.getResource("test-classes/CoreRenderer.class").toURI()),
 				new File(Resources.getResource("test-classes/PrimePartialViewContext.class").toURI()),
-				new File(Resources.getResource("test-classes/ValidCoffee.java").toURI())
+				new File(Resources.getResource("test-classes/ValidCoffee.java").toURI()),
+				new File(Resources.getResource("test-classes/test-lib-dir/guava-14.0.1.jar").toURI())
 		);
 		
 		for (File testFile : testFiles) {
@@ -71,10 +70,10 @@ public class TestFiles {
 			com.google.common.io.Files.copy(testFile, new File(pathJoiner.join(subWork.getAbsolutePath(), testFile.getName())));
 		}
 	}
-	
+
 	@Test
 	public void withExtensionNonRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
+		final Set<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -84,7 +83,7 @@ public class TestFiles {
 	
 	@Test
 	public void withExtensionRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
+		final Set<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -94,7 +93,7 @@ public class TestFiles {
 	
 	@Test
 	public void inclusiveRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+		final Set<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -104,7 +103,7 @@ public class TestFiles {
 	
 	@Test
 	public void inclusiveNonRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+		final Set<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -114,7 +113,7 @@ public class TestFiles {
 	
 	@Test
 	public void exclusiveRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		final Set<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -124,7 +123,7 @@ public class TestFiles {
 	
 	@Test
 	public void exclusiveNonRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		final Set<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -134,20 +133,20 @@ public class TestFiles {
 	
 	@Test
 	public void all() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).all();
-		
+		final Set<File> found = Files.in(filesWorkDir).all();
+
 		assertTrue(found != null && !found.isEmpty());
-		assertTrue(found.size() == 9);
+		assertTrue(found.size() == 11);
 		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
 	public void allNonRecursive() throws IOException {
-		final List<File> found = Files.in(filesWorkDir).nonRecursive().all();
-		
+		final Set<File> found = Files.in(filesWorkDir).nonRecursive().all();
+
 		assertTrue(found != null && !found.isEmpty());
-		assertThatFoundFilesHaveExtensions(found);
-		assertTrue(found.size() == 4);
+        assertTrue(found.size() == 5);
+        assertThatFoundFilesHaveExtensions(found);
 		assertThatFoundAreFiles(found);
 	}
 	
@@ -156,23 +155,42 @@ public class TestFiles {
 		final File found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").single();
 		
 		assertTrue(found != null);
-		assertThatFoundAreFiles(Lists.newArrayList(found));
+		assertThatFoundAreFiles(Sets.newHashSet(found));
 	}
+
+    @Test
+    public void multipleExtensionDelimiters() throws IOException {
+        final Set<File> found = Files.in(filesWorkDir).named("guava-14.0.1").all();
+
+        assertNotNull(found);
+        assertTrue(found.size() == 2);
+        assertThatFoundAreFiles(Sets.newHashSet(found));
+
+        final File singleFound = Files.in(filesWorkDir).nonRecursive().named("guava-14.0.1").single();
+
+        assertNotNull(singleFound);
+        assertThatFoundAreFiles(Sets.newHashSet(singleFound));
+
+        try {
+            Files.in(filesWorkDir).named("guava-14.0.1").single();
+        } catch (IllegalStateException e) {
+            // win
+            return;
+        }
+        fail(); // fail :(
+    }
 
     @Test
     public void delete() throws IOException {
         final String tmpDir = String.valueOf(File.createTempFile("probe", "tmp").getParent());
 
         final Joiner pathJoiner = Joiner.on(File.separator);
-
         final String testDir = pathJoiner.join(tmpDir, "testDelete");
 
         new File(pathJoiner.join(testDir, "dir1", "subDir")).mkdirs();
-
         Assert.assertTrue(Directories.in(testDir).recursive().list().size() == 2);
 
         Files.deleteRecursive(new File(testDir));
-
         try {
             Directories.in(testDir);
         } catch (IllegalArgumentException e) {
@@ -182,15 +200,16 @@ public class TestFiles {
         Assert.fail();
     }
 
-	private void assertThatFoundFilesHaveExtensions(List<File> found) {
+	private void assertThatFoundFilesHaveExtensions(Set<File> found) {
 		for (File f : found) {
-			if (Tokenizer.delimiter(".").tokenize(f.getAbsolutePath()).tokens().size() != 2) {
+            final boolean doesntHaveExtension = !(Tokenizer.delimiter(".").tokenize(f.getAbsolutePath()).tokens().size() > 1);
+            if (doesntHaveExtension) {
 				Assert.fail("found file: " + f.getAbsolutePath() + ", doesn't have an extension");
 			}
 		}
 	}
 	
-	private void assertThatFoundAreFiles(List<File> found) {
+	private void assertThatFoundAreFiles(Set<File> found) {
 		for (File f : found) {
 			if (!f.isFile()) {
 				Assert.fail("found 'file': " + f.getAbsolutePath() + ", is not a file");
@@ -203,7 +222,11 @@ public class TestFiles {
 			return;
 		}
 		if (file.isDirectory()) {
-			for (File sub : file.listFiles()) {
+			final File[] files = file.listFiles();
+			if (files == null) {
+				return;
+			}
+			for (File sub : files) {
 				delete(sub);
 			}
 		}

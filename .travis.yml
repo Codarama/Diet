@@ -1,4 +1,8 @@
 language: java
 jdk:
-  - oraclejdk7
-script: gradle clean fatJar --info
+  - oraclejdk8
+before_install:
+  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+script: "travis_wait 30 gradle build"
+notifications:
+  slack: codarama:YVl3XmRANEPWD74rdOErjXGG

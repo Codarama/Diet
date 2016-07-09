@@ -1,6 +1,7 @@
 package org.codarama.diet.model;
 
 import com.google.common.collect.ImmutableSet;
+import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Tokenizer;
 
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.regex.Pattern;
  * The idea behind the class is to provide a model object that makes sure that a string is actually a class name and not 
  * something else, so one doesn't need to check 'by hand' every time.
  * */
-public final class ClassName {
+public final class ClassName implements Resolvable {
 
 	/** 
 	 * This regex only checks plausibility it doesn't check validity. For a validity check a comparison against Java's reserved words must be made.
@@ -34,7 +35,9 @@ public final class ClassName {
 	private final static Set<String> EXCEPTIONAL_CLASS_NAMES = ImmutableSet.of(
 			"package-info"
 	);
-	
+
+    public static final String INNER_CLASS_SEPARATOR = "$";
+
 	private final String qualifiedClassName;
 
 	/** 
@@ -47,7 +50,7 @@ public final class ClassName {
 	 * */
 	public ClassName(String qualifiedClassName) {
 		if (!isClassName(qualifiedClassName)) {
-			throw new IllegalArgumentException("invalid fully qualified class name: " + qualifiedClassName + ", expected: " + CLASS_NAME_VALIDATION_REGEX);
+			throw new IllegalArgumentException("invalid fully qualified class name: " + qualifiedClassName + ", expected: " + CLASS_NAME_VALIDATION_REGEX + ", actual: " + qualifiedClassName);
 		}
 		this.qualifiedClassName = qualifiedClassName;
 	}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:META-INF/common.xml" />
+
+    <bean id="indexWorkDir" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="#{workDir.concat('/index')}" type="java.lang.Object"/>
+    </bean>
+
+    <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
+        <constructor-arg type="java.lang.String" value="testIndexConf.json"/>
+    </bean>
+
+    <bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+
+    <bean id="parentResolver" class="org.codarama.diet.component.ListenableComponent" abstract="true">
+        <property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+    </bean>
+
+    <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
+    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="parentResolver">
+        <property name="classStreamResolver" ref="classStreamResolver"/>
+    </bean>
+
+</beans>

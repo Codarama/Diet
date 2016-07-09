@@ -3,7 +3,7 @@ package org.codarama.diet.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
@@ -27,6 +27,7 @@ public class TestConcurrentClassDependencyResolver {
 		
 		Assert.assertTrue(resolved != null);
 		Assert.assertTrue(!resolved.isEmpty());
-		Assert.assertTrue(resolved.size() == 10);
+		Assert.assertEquals(1, resolved.size());
+		Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), resolved.iterator().next());
 	}
 }

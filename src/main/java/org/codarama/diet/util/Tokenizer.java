@@ -1,14 +1,13 @@
 package org.codarama.diet.util;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.codarama.diet.util.annotation.NotThreadSafe;
-
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
+import org.codarama.diet.util.annotation.NotThreadSafe;
+
+import java.util.Collections;
+import java.util.List;
 
 @NotThreadSafe // or is it ?!?
 public final class Tokenizer {
@@ -26,23 +25,19 @@ public final class Tokenizer {
 
 	public Tokenizer tokenize(String string) {
 		if (string.contains(delimiter)) {
-			tokens = Lists.newArrayList(Splitter.on(delimiter).split(string));
+			tokens = Lists.newArrayList(Splitter.on(delimiter).omitEmptyStrings().split(string));
 		}
 		return this;
 	}
 	
 	public List<String> tokensIn(Range<Integer> range) {
-      final boolean doesntHaveUpperAndLowerBounds = !(range.hasUpperBound() && range.hasLowerBound());
-      if (doesntHaveUpperAndLowerBounds) {
-			throw new IllegalArgumentException("boundless ranges are not currently supported");
-		}
-		
+
 		if (tokens.isEmpty()) {
 			return tokens;
 		}
 		
-		final Integer lower = range.lowerEndpoint();
-		final Integer upper = range.upperEndpoint();
+		final Integer lower = range.hasLowerBound() ? range.lowerEndpoint() : 0;
+		final Integer upper = range.hasUpperBound() ? range.upperEndpoint() : tokens.size();
 		
 		if (lower < 0) {
 			throw new IndexOutOfBoundsException("lower bound: " + lower + ", is negative");
@@ -56,7 +51,7 @@ public final class Tokenizer {
 	}
 	
 	public List<String> tokens() {
-		return ImmutableList.copyOf(tokens);
+		return Lists.newArrayList(tokens);
 	}
 	
 	public String firstToken() {

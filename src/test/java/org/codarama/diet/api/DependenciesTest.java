@@ -2,7 +2,7 @@ package org.codarama.diet.api;
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.SourceFile;
@@ -16,10 +16,11 @@ public class DependenciesTest {
 		final Set<ClassName> dependencies = Dependencies
 				.ofClass(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"))
 				.set();
-		
+
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());
-		Assert.assertTrue(dependencies.size() == 10);
+		Assert.assertEquals(1, dependencies.size());
+		Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), dependencies.iterator().next());
 	}
 	
 	@Test
