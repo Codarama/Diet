@@ -100,7 +100,9 @@ public class SourceFile implements Resolvable {
 
 	/**
 	 * Returns the dependencies of this {@link SourceFile}
-	 * */
+	 * 
+	 * @return a {@link Set} of {@link ClassName}s that this {@link SourceFile} depends on
+	 */
 	public Set<ClassName> dependencies() {
 		final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER
 				.getInstance();

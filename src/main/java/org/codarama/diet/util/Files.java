@@ -22,57 +22,44 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /** 
- * OK since I'm currently too lazy to properly document this class, I'm just going to give usage examples.
- * 
- * Given the following file system tree:
- * 
- *  /root
- *    - anExe.exe
- *    - aDll.dll
- *    - another.dll
- *    /sub
- *      - subExe.exe
- *      - anExe.exe
- *      - subDll.dll
- *      
- *  All {@link Files} methods are recursive by default.
- *  To make them non-recursive just call {@link Files#nonRecursive()} anywhere, like so:
- *  	<pre>
- *      <code> Files.in("/root").withExtension("dll").nonRecursive().list(); </code>
- *      <pre>
- *  So to:
- *  	<pre>
- *  - list all DLLs in the /root folder recursively:
- *  	<pre>
+ * <p>OK since I'm currently too lazy to properly document this class, I'm just going to give usage examples.</p>
+ * <p>Given the following file system tree:</p>
+ * <p> /root</p>
+ * <p>   - anExe.exe</p>
+ * <p>   - aDll.dll</p>
+ * <p>   - another.dll</p>
+ * <p>  /sub</p>
+ * <p>     - subExe.exe</p>
+ * <p>     - anExe.exe</p>
+ * <p>     - subDll.dll</p>
+ * <p>All {@link Files} methods are recursive by default.</p>
+ * <p>To make them non-recursive just call {@link Files#nonRecursive()} anywhere, like so:</p>
+ * <p><code> Files.in("/root").withExtension("dll").nonRecursive().list(); </code></p>
+ * <p>So to:</p>
+ *  <ul>
+ *  <li>list all DLLs in the /root folder recursively:
  *      <code>Files.in("/root").withExtension("dll").list();</code>
- *  	<pre>
- *      Returns: ["/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
- *      <pre>
- *  - list all files named 'anExe' in the /root folder recursively:
- *  	<pre>
+ *      <p>Returns: ["/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]</p>
+ *  </li>
+ *  <li>list all files named 'anExe' in the /root folder recursively:
  *      <code>Files.in("/root").named("anExe").list();</code>
- *      <pre>
- *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
- *      <pre>
- *  - to list all DLLs in /root AND all files named 'anExe':
- *  	<pre>
+ *      <p>Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]</p>
+ *  </li>
+ *  <li>to list all DLLs in /root AND all files named 'anExe':
  *      <code>Files.in("/root").withExtension("dll").named("anExe").inclusive();</code>
- *      <pre>
- *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe", "/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
- *      <pre>
- *      Note: <code>Files.in("/root").withExtension("dll").named("anExe").exclusive();</code>
- *      <pre>
- *      Will return nothing since there are no files named 'anExe' with a extension .dll
- *      <pre>
- *  - to list all files in /root which are named 'subExe' and have the .exe extension:
- *  	<pre>
+ *      <p>Returns: ["/root/anExe.exe", "/root/sub/anExe.exe", "/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]</p>
+ *      <p>Note: <code>Files.in("/root").withExtension("dll").named("anExe").exclusive();</code>
+ *      Will return nothing since there are no files named 'anExe' with a extension .dll</p>
+ *  </li>
+ *  <li>to list all files in /root which are named 'subExe' and have the .exe extension:
  *      <code>Files.in("/root").withExtension("exe").named("subExe").exclusive();</code>
- *      <pre>
- *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
- *      <pre>
- *  This should be enough for you :)
+ *      <p>Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]</p>
+ *  </li>
+ *  </ul>
  *  
- * */
+ *  <p>This should be enough for you :)</p>
+ *  
+ */
 @NotThreadSafe
 public class Files { // XXX this is actually rather procedural ...
 	

@@ -86,9 +86,9 @@ public class ClassStream implements Resolvable, Packagable {
     /**
      * Returns the fully qualified name of the class represented by this object.
      *
-     * @see {@link ClassName}
+     * @see ClassName
      * @return the fully qualified name of the class represented by this object
-     * */
+     */
     public ClassName name() {
         return this.name;
     }

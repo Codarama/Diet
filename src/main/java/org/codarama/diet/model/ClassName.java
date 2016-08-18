@@ -62,19 +62,14 @@ public final class ClassName implements Resolvable {
 	}
 
 	/** 
-	 * Returns the short name of the wrapped qualified class name.
-	 * 
-	 * <pre>
-	 * 
-	 * In other words for this:
+	 * <p>Returns the short name of the wrapped qualified class name.</p>
+	 * <p>In other words for this:</p>
 	 *   
 	 *   <code>org.codarama.diet.model.ClassName</code>
 	 * 
-	 * this method will return:
+	 * <p>will return:</p>
 	 * 
 	 *   <code>ClassName</code>
-	 *   
-	 * <pre>
 	 *   
 	 * @return the short name of the wrapped qualified class name
 	 * */

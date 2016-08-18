@@ -21,7 +21,7 @@ import java.util.Set;
  * 
  * More info here:
  *   http://en.wikipedia.org/wiki/Java_class_file
- * */
+ */
 public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	
 	public static final String EXTENSION = "class";
@@ -46,8 +46,9 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	/** 
 	 * Returns the qualified class name of this ClassFile.
 	 * 
-	 * @see {@link ClassName}
-	 * */
+	 * @return the {@link ClassName} of this {@link ClassFile}
+	 * @see ClassName
+	 */
 	public ClassName qualifiedName() {
 		return qualifiedName;
 	}
@@ -61,7 +62,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	 * @return a new {@link ClassFile}
 	 * 
 	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
-	 * */
+	 */
 	public static ClassFile fromClasspath(String path) {
 		try {
 			
@@ -82,7 +83,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	 * @return a new {@link ClassFile}
 	 * 
 	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
-	 * */
+	 */
 	public static ClassFile fromFilepath(String path) {
 		return new ClassFile(new File(path));
 	}
@@ -93,7 +94,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	 * @param classFile a compiled Java class file on the file system
 	 * @return a new {@link ClassFile}
 	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
-	 * */
+	 */
 	public static ClassFile fromFile(File classFile) {
 		if (classFile == null) {
 			throw new IllegalArgumentException("null argument not allowed");
@@ -103,7 +104,9 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	
 	/**
 	 * Returns the dependencies of this {@link ClassFile}
-	 * */
+	 * 
+	 * @return a {@link Set} of {@link ClassName}s that this {@link ClassFile} depends on
+	 */
 	public Set<ClassName> dependencies() {
 		final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
 		if (dependencies == null) {
@@ -122,7 +125,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	 * Returns the wrapped class file as a {@link File}.
 	 * 
 	 * @return the wrapped class file as a {@link File}.
-	 * */
+	 */
 	public File physicalFile() {
 		return new File(classFile.getAbsolutePath());
 	}
@@ -139,7 +142,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 
 	/** 
 	 * Returns the path to the wrapped {@link File}.
-	 * */
+	 */
 	@Override
 	public String toString() {
 		return classFile.getAbsolutePath();

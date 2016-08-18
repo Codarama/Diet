@@ -8,49 +8,95 @@
 	<version>0.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Diet Engine</name>
+	<name>diet-engine</name>
+	<description>A demo for deployment to the Central Repository via OSSRH</description>
 	<url>http://diet.codarama.org/</url>
+
+	<licenses>
+		<license>
+			<name>The MIT License (MIT)</name>
+			<url>http://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Simeon Iliev</name>
+			<email>simeon.iliev@codarama.org</email>
+			<organization>Codarama</organization>
+			<organizationUrl>http://www.codarama.org</organizationUrl>
+		</developer>
+		<developer>
+			<name>Tihomir Mateev</name>
+			<email>tihomir.mateev@codarama.org</email>
+			<organization>Codarama</organization>
+			<organizationUrl>http://www.codarama.org</organizationUrl>
+		</developer>
+		<developer>
+			<name>Dimitar Terziev</name>
+			<email>dimitar.terziev@codarama.org</email>
+			<organization>Codarama</organization>
+			<organizationUrl>http://www.codarama.org</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/Codarama/diet-engine.git</connection>
+		<developerConnection>scm:git:ssh://github.com/Codarama/diet-engine.git</developerConnection>
+		<url>http://github.com/Codarama/diet-engine.git/tree/master</url>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>codarama</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>codarama</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<properties>
 		<org.springframework.version>4.3.1.RELEASE</org.springframework.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <test.suite>**/UnitTestsSuite.class</test.suite>
+		<test.suite>**/UnitTestsSuite.class</test.suite>
 	</properties>
 
-    <!-- ModeShape BOM dependencies -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.modeshape.bom</groupId>
-                <artifactId>modeshape-bom-embedded</artifactId>
-                <version>5.1.0.Final</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<!-- ModeShape BOM dependencies -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.modeshape.bom</groupId>
+				<artifactId>modeshape-bom-embedded</artifactId>
+				<version>5.1.0.Final</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <!-- Common dependencies -->
+	<!-- Common dependencies -->
 	<dependencies>
 
-        <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-jcr</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-jcr</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.192</version>
-        </dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.192</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
 			<scope>test</scope>
-        </dependency>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -58,12 +104,12 @@
 			<version>4.12</version>
 		</dependency>
 
-        <dependency>
-            <groupId>io.takari.junit</groupId>
-            <artifactId>takari-cpsuite</artifactId>
-            <version>1.2.7</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>io.takari.junit</groupId>
+			<artifactId>takari-cpsuite</artifactId>
+			<version>1.2.7</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -145,18 +191,16 @@
 		</dependency>
 	</dependencies>
 
-    <profiles>
-        <profile>
-            <id>intgr</id>
-            <properties>
-                <test.suite>org/codarama/diet/test/util/suite/IntegrationTestsSuite.java</test.suite>
-            </properties>
-        </profile>
-    </profiles>
+	<profiles>
+		<profile>
+			<id>intgr</id>
+			<properties>
+				<test.suite>org/codarama/diet/test/util/suite/IntegrationTestsSuite.java</test.suite>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
-		<finalName>diet</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -174,9 +218,9 @@
 				<version>2.18.1</version>
 				<configuration>
 					<skipTests>false</skipTests>
-                    <includes>
-                        <include>${test.suite}</include>
-                    </includes>
+					<includes>
+						<include>${test.suite}</include>
+					</includes>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -205,6 +249,49 @@
 						<id>prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Generate sources artifact -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Generate JavaDoc artifact -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Sign the artifacts, see http://central.sonatype.org/pages/working-with-pgp-signatures.html -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
 						</goals>
 					</execution>
 				</executions>

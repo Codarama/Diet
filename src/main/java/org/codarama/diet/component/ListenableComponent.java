@@ -12,7 +12,7 @@ import com.google.common.eventbus.EventBus;
  * Extenders should use the given event bus to notify listeners for progress updates.
  * The definition of what a 'progress update' is depends on the context of the extender.
  * 
- * @see {@link ComponentEvent}
+ * @see ComponentEvent
  * */
 public abstract class ListenableComponent {
 

@@ -34,6 +34,7 @@ public interface MinimizationStrategy<ST extends Resolvable, LT, RT extends Pack
      * @param libraries the libraries to search for dependencies in
      *
      * @return a set of {@link org.codarama.diet.model.ClassFile}s on which the sources depend
+     * @throws IOException if there is an issue while reading from the storage
      * */
     public Set<RT> minimize(Set<ST> sources, Set<LT> libraries) throws IOException;
 }
