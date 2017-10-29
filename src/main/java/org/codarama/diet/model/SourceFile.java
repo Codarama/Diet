@@ -126,13 +126,9 @@ public class SourceFile implements Resolvable {
             return false;
         }
 
-        try {
-            // [tmateev] I trusted them for saying this is fast, but we might want to measure how fast it really is
-            JavaParser.parse(sourceFile);
-        } catch (ParseException e) {
-            // assuming parse failed because file is not a valid Java source file
-            return false;
-        }
+        // [tmateev] I trusted them for saying this is fast, but we might want to measure how fast it really is
+        JavaParser.parse(sourceFile);
+        
         return true;
     }
 
