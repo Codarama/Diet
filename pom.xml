@@ -13,7 +13,7 @@
 
     <properties>
         <org.springframework.version>5.0.1.RELEASE</org.springframework.version>
-        <aspectj.version>1.8.11</aspectj.version>
+        <aspectj.version>1.8.12</aspectj.version>
         <slf4j.version>1.7.25</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <test.suite>**/UnitTestsSuite.class</test.suite>
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.4.3</version>
+            <version>3.5.1</version>
         </dependency>
     </dependencies>
 

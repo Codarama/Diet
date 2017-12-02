@@ -100,9 +100,7 @@ public class SourceFile implements Resolvable {
                 .getInstance();
         if (dependencies == null) {
             try {
-
                 dependencies = sourceDependencyResolver.resolve(this);
-
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
@@ -128,7 +126,7 @@ public class SourceFile implements Resolvable {
 
         // [tmateev] I trusted them for saying this is fast, but we might want to measure how fast it really is
         JavaParser.parse(sourceFile);
-        
+
         return true;
     }
 

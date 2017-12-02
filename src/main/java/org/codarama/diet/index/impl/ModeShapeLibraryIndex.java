@@ -2,6 +2,7 @@ package org.codarama.diet.index.impl;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import org.codarama.diet.index.LibraryIndex;
 import org.codarama.diet.model.ClassFile;
@@ -42,6 +43,9 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
     private static final String JCR_SYSTEM_NODE_ID = "/jcr:system";
     private static final String JCR_ROOT_NODE_ID = "/jcr:root";
     private static final String JCR_BINARY_NODE_PROPERTY = "binary";
+
+    // multivalue space delimited list of names of jars containing a given class (a node in the context of the index)
+    private static final String JCR_CONTAINING_JARS_NODE_PROPERTY = "containingJars";
 
     private static final String XPATH_QUERY_SEPARATOR = "/";
     private static final String XPATH_DOLLAR_SIGN_REPLACEMENT = "___";
@@ -89,7 +93,7 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
 
                 final List<String> packagesAndClassname = Tokenizer.delimiter("/").tokenize(entryName).tokens();
                 try {
-                    addChildrenDepthFirst(packagesAndClassname, rootNode, entry, jar);
+                    addChildrenDepthFirst(rootNode, packagesAndClassname, entry, jar);
                 } catch (RepositoryException | IOException e) {
                     throw new IllegalStateException("could not add nodes: " + packagesAndClassname + ", to parent: " + rootNode);
                 }
@@ -105,11 +109,11 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
         return this;
     }
 
-    private void addChildrenDepthFirst(Collection<String> newChildren, Node to, JarEntry entry, JarFile jar) throws RepositoryException, IOException {
-        if (newChildren.isEmpty()) {
+    private void addChildrenDepthFirst(Node parent, Collection<String> children, JarEntry entry, JarFile jar) throws RepositoryException, IOException {
+        if (children.isEmpty()) {
             return;
         }
-        final Iterator<String> childrenIterator = newChildren.iterator();
+        final Iterator<String> childrenIterator = children.iterator();
         if (childrenIterator.hasNext()) {
 
             String childName = childrenIterator.next();
@@ -119,21 +123,29 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
                 childName = childName.replaceAll(INNER_CLASS_SEPARATOR_REGEX, XPATH_DOLLAR_SIGN_REPLACEMENT);
             }
 
-            Node child;
-            if (!to.hasNode(childName)) {
-                child = to.addNode(childName);
+            final Node child;
+            if (!parent.hasNode(childName)) {
+                child = parent.addNode(childName);
             }
             else {
-                child = to.getNode(childName);
+                child = parent.getNode(childName);
             }
 
             final boolean childIsClassFile = childName.endsWith(ClassFile.EXTENSION);
             if (childIsClassFile) {
                 child.setProperty(JCR_BINARY_NODE_PROPERTY, toBinary(jar.getInputStream(entry)));
+
+                if (child.hasProperty(JCR_CONTAINING_JARS_NODE_PROPERTY)) {
+                    final String currentContainingJars = child.getProperty(JCR_CONTAINING_JARS_NODE_PROPERTY).getString();
+                    child.setProperty(JCR_CONTAINING_JARS_NODE_PROPERTY, currentContainingJars + " " + jar.getName());
+                }
+                else {
+                    child.setProperty(JCR_CONTAINING_JARS_NODE_PROPERTY, jar.getName());
+                }
             }
 
             childrenIterator.remove();
-            addChildrenDepthFirst(newChildren, child, entry, jar);
+            addChildrenDepthFirst(child, children, entry, jar);
         }
     }
 
@@ -193,8 +205,22 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
             throw new IllegalStateException("could not get binary property for file with name: " + name, e);
         }
 
+        final Set<String> containingJarNames;
         try {
-            return ClassStream.fromStream(binary.getStream());
+            final String rawProperty = node.getProperty(JCR_CONTAINING_JARS_NODE_PROPERTY).getString();
+            final List<String> spaceDelimitedJarNames = Tokenizer.delimiter(" ").tokenize(rawProperty).tokens();
+            if (spaceDelimitedJarNames.size() > 1) {
+                containingJarNames = Sets.newHashSet(spaceDelimitedJarNames);
+            }
+            else {
+                containingJarNames = Sets.newHashSet(rawProperty);
+            }
+        } catch (RepositoryException e) {
+            throw new IllegalStateException("could not get containingJars property for file with name: " + name, e);
+        }
+
+        try {
+            return ClassStream.fromStream(binary.getStream(), containingJarNames);
         } catch (RepositoryException e) {
             throw new IllegalStateException("could not get binary stream for node with name: " + name, e);
         }

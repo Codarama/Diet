@@ -25,7 +25,7 @@ import com.google.common.io.Resources;
 @ContextConfiguration({"classpath:META-INF/test-contexts/testManualParseSourceDependencyResolverContext.xml"})
 public class TestManualParseSourceDependencyResolver {
 
-    private static final String JAVA_IMPORT_KEYWOD = "import";
+    private static final String JAVA_IMPORT_KEYWORD = "import";
 
     @Autowired
     private DependencyResolver<SourceFile> sourceDependencyResolver;
@@ -40,7 +40,7 @@ public class TestManualParseSourceDependencyResolver {
 
         final Set<String> dependencies = new HashSet<>();
         for (String line : lines) {
-            if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
+            if (line.startsWith(JAVA_IMPORT_KEYWORD)) {
 
                 final String dependency = line.split(" ")[1].replaceAll(";", "").replaceAll("\r", ""); // pretty ...
                 dependencies.add(dependency);

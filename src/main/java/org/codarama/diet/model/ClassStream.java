@@ -1,14 +1,17 @@
 package org.codarama.diet.model;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.bcel.classfile.ClassParser;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
-import org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver;
 import org.codarama.diet.model.marker.Packagable;
 import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.annotation.NotThreadSafe;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,16 +27,25 @@ public class ClassStream implements Resolvable, Packagable {
     private final InputStream streamContent;
     private final ClassName name;
 
-    private ClassStream(InputStream streamContent) {
+    // set of lib jars this class is contained in
+    private final Set<String> containingJarNames;
+
+    private ClassStream(InputStream streamContent, Set<String> containingJarNames) {
         this.streamContent = new BufferedInputStream(streamContent);
         try {
             this.streamContent.mark(streamContent.available());
             this.name = new ClassName(new ClassParser(this.streamContent, "").parse().getClassName());
             this.streamContent.reset();
+
+            this.containingJarNames = containingJarNames;
         } catch (IOException e) {
             // assuming bcel threw IOException because validation failed
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private ClassStream(InputStream streamContent) {
+        this(streamContent, Collections.<String>emptySet());
     }
 
     /**
@@ -49,29 +61,16 @@ public class ClassStream implements Resolvable, Packagable {
     }
 
     /**
-     * Creates a new class stream from a file on the file system.
+     * Creates a new class stream from an input stream.
      * This method validates whether the give input stream actually contains a compiled class file.
      *
-     * @throws IllegalArgumentException if given file doesn't exist or is a directory
-     * @param file file to reate a class stream from
+     * @throws IllegalArgumentException if the stream does not contain a compiled class
+     * @param content the stream to create a ClassStream from
+     * @param containingJarNames names of jars this class is contained in
      * @return a new class stream
      * */
-    public static ClassStream fromFile(File file) {
-        if (file == null) {
-            throw new NullPointerException("argument is null");
-        }
-        if (!file.exists()) {
-            throw new IllegalArgumentException(file.getAbsolutePath() + " does not exist");
-        }
-        if (file.isDirectory()) {
-            throw new IllegalArgumentException(file.getAbsolutePath() + " is a directory, but expected file");
-        }
-        try {
-            return fromStream(new BufferedInputStream(new FileInputStream(file)));
-        } catch (FileNotFoundException e) {
-            // should not happen as we've checked whether the file exists
-            throw new IllegalArgumentException("could not find file: " + file, e);
-        }
+    public static ClassStream fromStream(InputStream content, Set<String> containingJarNames) {
+        return new ClassStream(content, containingJarNames);
     }
 
     /**
@@ -105,6 +104,24 @@ public class ClassStream implements Resolvable, Packagable {
         } catch (IOException e) {
             throw new RuntimeException("could not get dependencies of: " + this, e);
         }
+    }
+
+    /**
+     * Returns a set of the names of jar files from the lib dir containing this class.
+     *
+     * @return an immutable set of the names of jar files from the lib dir containing this class
+     * */
+    public Set<String> containedIn() {
+       return ImmutableSet.copyOf(this.containingJarNames);
+    }
+
+    /**
+     * Marks this class as contained in the jar with the given name.
+     *
+     * @param jarName the name of the jar this class is contained in
+     * */
+    public void containedIn(String jarName) {
+        this.containingJarNames.add(jarName);
     }
 
     @Override

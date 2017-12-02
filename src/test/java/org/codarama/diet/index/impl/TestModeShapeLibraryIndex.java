@@ -42,12 +42,15 @@ public class TestModeShapeLibraryIndex {
     private DependencyResolver<ClassStream> classStreamResolver;
 
     private JarFile primefacesJar;
+    private JarFile aspectweaverJar;
 
     @Before
     public void init() throws URISyntaxException, IOException {
         final Set<JarFile> toIndex = new HashSet<>();
-        toIndex.add(new JarFile(Resources.getResource("test-classes/lib/aspectjweaver-1.6.12.jar").toURI().getPath()));
         toIndex.add(new JarFile(Resources.getResource("test-classes/lib/commons-lang3-3.1.jar").toURI().getPath()));
+
+        this.aspectweaverJar = new JarFile(Resources.getResource("test-classes/lib/aspectjweaver-1.6.12.jar").toURI().getPath());
+        toIndex.add(aspectweaverJar);
 
         this.primefacesJar = new JarFile(Resources.getResource("test-classes/lib/primefaces-3.5.jar").toURI().getPath());
         toIndex.add(primefacesJar);
@@ -109,6 +112,8 @@ public class TestModeShapeLibraryIndex {
         assertNotNull(found);
         assertEquals(found.name(), testName);
         assertTrue(found.content().available() > 0);
+        assertFalse(found.containedIn().isEmpty());
+        assertTrue(found.containedIn().contains(aspectweaverJar.getName()));
 
         Assert.assertNull(modeShapeIndex.find(new ClassName("non.existent.clazz.Name")));
     }
