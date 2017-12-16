@@ -22,7 +22,6 @@ public class TestClassFile {
     @Test
     public void dependencies() {
         final Set<ClassName> dependencies = ClassFile.fromClasspath("test-classes/ClassName.class").dependencies();
-
         Assert.assertTrue(dependencies != null);
 
         final int expectedCount = 2;

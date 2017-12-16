@@ -42,6 +42,7 @@ public class TestModeShapeLibraryIndex {
     private DependencyResolver<ClassStream> classStreamResolver;
 
     private JarFile primefacesJar;
+    private JarFile primefacesJarCopy;
     private JarFile aspectweaverJar;
 
     @Before
@@ -54,6 +55,9 @@ public class TestModeShapeLibraryIndex {
 
         this.primefacesJar = new JarFile(Resources.getResource("test-classes/lib/primefaces-3.5.jar").toURI().getPath());
         toIndex.add(primefacesJar);
+
+        this.primefacesJarCopy = new JarFile(Resources.getResource("test-classes/lib/primefaces-3.5_copy.jar").toURI().getPath());
+        toIndex.add(primefacesJarCopy);
 
         modeShapeIndex.index(toIndex);
     }
@@ -98,6 +102,11 @@ public class TestModeShapeLibraryIndex {
         assertNotNull(found);
         assertEquals(found.name(), testName);
         assertTrue(found.content().available() > 0);
+
+        final Set<String> jarNamesContainingFoundClass = found.containedIn();
+        assertFalse(found.containedIn().isEmpty());
+        assertTrue(jarNamesContainingFoundClass.contains(primefacesJar.getName()));
+        assertTrue(jarNamesContainingFoundClass.contains(primefacesJarCopy.getName()));
 
         testName = new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata");
         found = modeShapeIndex.find(testName);
@@ -152,7 +161,6 @@ public class TestModeShapeLibraryIndex {
     @Test
     public void size() {
         final long size = modeShapeIndex.size();
-
         assertTrue(size > 0);
     }
 }

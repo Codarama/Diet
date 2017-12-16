@@ -34,5 +34,4 @@ public class TestClassStream {
         Assert.assertNotNull(dependencies);
         Assert.assertTrue(dependencies.size() > 0);
     }
-
 }
